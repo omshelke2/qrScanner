@@ -6,8 +6,8 @@
     #preview {
       width: 60%;
       height: 60%;
-      margin-left: 10%;
-      margin-right: 10%;
+      margin-left: 20%;
+      margin-right: 20%;
     }
 
     .button-container {
@@ -63,17 +63,34 @@
         scanners[option] = scanner;
       }
 
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(stream) {
-          video.srcObject = stream;
-          video.play();
-          scanner.start(video);
-          resultElement.innerHTML = 'Scanning QR Code...';
-        })
-        .catch(function(err) {
-          console.error(err);
-          resultElement.innerHTML = 'Error: ' + err.message;
-        });
+      Instascan.Camera.getCameras().then(function(cameras) {
+        if (cameras.length > 0) {
+          // Use the back camera if available
+          let backCamera = cameras.find(function(camera) {
+            return camera.name.toLowerCase().includes('back');
+          });
+          if (!backCamera) {
+            backCamera = cameras[0]; // Use the first camera as a fallback
+          }
+
+          navigator.mediaDevices.getUserMedia({ video: { deviceId: backCamera.deviceId } })
+            .then(function(stream) {
+              video.srcObject = stream;
+              video.play();
+              scanner.start(video);
+              resultElement.innerHTML = 'Scanning QR Code...';
+            })
+            .catch(function(err) {
+              console.error(err);
+              resultElement.innerHTML = 'Error: ' + err.message;
+            });
+        } else {
+          resultElement.innerHTML = 'No cameras found.';
+        }
+      }).catch(function(err) {
+        console.error(err);
+        resultElement.innerHTML = 'Error: ' + err.message;
+      });
     }
 
     function handleScanResult(content) {
@@ -81,8 +98,8 @@
       resultElement.innerHTML = 'QR Code Value: ' + content;
 
       let qrValue = content;
-      let predefinedValueA = 'https://example.com/option-a';
-      let predefinedValueB = 'https://example.com/option-b';
+      let predefinedValueA = '1234';
+      let predefinedValueB = '5678';
 
       if (qrValue === predefinedValueA) {
         showAlert('QR Code A matches the predefined value!');
