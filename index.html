@@ -3,58 +3,104 @@
 <head>
   <title>QR Code Scanner</title>
   <style>
-    #preview {
-      width: 100%;
-      height: auto;
-      margin: 20px 0;
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    
+    h1 {
+      margin-top: 20px;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+    }
+    
+    .option {
+      margin: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f7f7f7;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.3s ease-in-out;
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .option:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .option h2 {
+      margin-top: 0;
+    }
+    
+    .result {
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <h1>QR Code Scanner</h1>
   
-  <button id="startButton" onclick="startScanner()">Start Scanner</button>
+  <div class="container">
+    <div class="option" onclick="startScanner('Option A')">
+      <h2>Scan Option A</h2>
+      <video id="previewA"></video>
+      <div class="result" id="resultA"></div>
+    </div>
   
-  <div id="scanOptions" style="display: none;">
-    <h2>Scan Option 1</h2>
-    <p>Scan QR Code A:</p>
-    <video id="previewA"></video>
-    
-    <h2>Scan Option 2</h2>
-    <p>Scan QR Code B:</p>
-    <video id="previewB"></video>
+    <div class="option" onclick="startScanner('Option B')">
+      <h2>Scan Option B</h2>
+      <video id="previewB"></video>
+      <div class="result" id="resultB"></div>
+    </div>
   </div>
-  
-  <div id="result"></div>
 
   <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
   <script>
     let scannerA, scannerB;
-    
-    function startScanner() {
-      document.getElementById("startButton").style.display = "none";
-      document.getElementById("scanOptions").style.display = "block";
-      
-      // Create scanner for option 1
-      scannerA = new Instascan.Scanner({ video: document.getElementById('previewA'), mirror: false });
-      scannerA.addListener('scan', function(content) {
-        handleScanResult(content, "Option A");
-      });
+
+    function startScanner(option) {
+      let optionElement = document.getElementById('result' + option);
+      optionElement.innerHTML = 'Initializing...';
+
+      // Create scanner for the selected option
+      let scanner;
+      if (option === 'Option A') {
+        scanner = scannerA || createScanner('previewA', optionElement, option);
+        scannerA = scanner;
+      } else if (option === 'Option B') {
+        scanner = scannerB || createScanner('previewB', optionElement, option);
+        scannerB = scanner;
+      }
+
+      // Start the scanner
       Instascan.Camera.getCameras().then(function(cameras) {
-        startCameraScanner(scannerA, cameras, "Option A");
-      });
-      
-      // Create scanner for option 2
-      scannerB = new Instascan.Scanner({ video: document.getElementById('previewB'), mirror: false });
-      scannerB.addListener('scan', function(content) {
-        handleScanResult(content, "Option B");
-      });
-      Instascan.Camera.getCameras().then(function(cameras) {
-        startCameraScanner(scannerB, cameras, "Option B");
+        startCameraScanner(scanner, cameras, optionElement, option);
+      }).catch(function(e) {
+        console.error(e);
+        optionElement.innerHTML = 'Error: ' + e.message;
       });
     }
-    
-    function startCameraScanner(scanner, cameras, option) {
+
+    function createScanner(videoId, resultElement, option) {
+      let video = document.getElementById(videoId);
+      let scanner = new Instascan.Scanner({ video: video, mirror: false });
+
+      scanner.addListener('scan', function(content) {
+        handleScanResult(content, resultElement, option);
+      });
+
+      return scanner;
+    }
+
+    function startCameraScanner(scanner, cameras, resultElement, option) {
       if (cameras.length > 0) {
         let backCamera = cameras.find(function(camera) {
           return camera.name.toLowerCase().includes('back');
@@ -63,26 +109,27 @@
           backCamera = cameras[0];
         }
         scanner.start(backCamera);
-        console.log("Started scanner for " + option);
+        resultElement.innerHTML = 'Scanner started for ' + option;
       } else {
         console.error('No cameras found for ' + option);
+        resultElement.innerHTML = 'Error: No cameras found for ' + option;
       }
     }
-    
-    function handleScanResult(content, option) {
-      document.getElementById('result').innerHTML = 'QR Code Value (' + option + '): ' + content;
-      
+
+    function handleScanResult(content, resultElement, option) {
+      resultElement.innerHTML = 'QR Code Value (' + option + '): ' + content;
+
       // Check if scanned QR code matches a predefined value
-      let predefinedValueA = "1234";
-      let predefinedValueB = "5678";
-      
+      let predefinedValueA = "https://omshelke2.github.io/connect/";
+      let predefinedValueB = "omkar";
+
       if (option === "Option A" && content === predefinedValueA) {
         showAlert("QR Code A matches the predefined value!");
       } else if (option === "Option B" && content === predefinedValueB) {
         showAlert("QR Code B matches the predefined value!");
       }
     }
-    
+
     function showAlert(message) {
       alert(message);
     }
