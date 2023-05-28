@@ -6,8 +6,8 @@
     #preview {
       width: 60%;
       height: 60%;
-      margin-left: 20%;
-      margin-right: 20%;
+      margin-left: 10%;
+      margin-right: 10%;
     }
 
     .button-container {
@@ -73,44 +73,7 @@
             backCamera = cameras[0]; // Use the first camera as a fallback
           }
 
-          navigator.mediaDevices.getUserMedia({ video: { deviceId: backCamera.deviceId } })
+          navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: backCamera.deviceId } } })
             .then(function(stream) {
               video.srcObject = stream;
-              video.play();
-              scanner.start(video);
-              resultElement.innerHTML = 'Scanning QR Code...';
-            })
-            .catch(function(err) {
-              console.error(err);
-              resultElement.innerHTML = 'Error: ' + err.message;
-            });
-        } else {
-          resultElement.innerHTML = 'No cameras found.';
-        }
-      }).catch(function(err) {
-        console.error(err);
-        resultElement.innerHTML = 'Error: ' + err.message;
-      });
-    }
-
-    function handleScanResult(content) {
-      let resultElement = document.getElementById('result');
-      resultElement.innerHTML = 'QR Code Value: ' + content;
-
-      let qrValue = content;
-      let predefinedValueA = '1234';
-      let predefinedValueB = '5678';
-
-      if (qrValue === predefinedValueA) {
-        showAlert('QR Code A matches the predefined value!');
-      } else if (qrValue === predefinedValueB) {
-        showAlert('QR Code B matches the predefined value!');
-      }
-    }
-
-    function showAlert(message) {
-      alert(message);
-    }
-  </script>
-</body>
-</html>
+              video.play
