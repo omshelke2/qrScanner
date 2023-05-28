@@ -4,9 +4,11 @@
   <title>QR Code Scanner</title>
   <style>
     #preview {
-      width: 50%;
-      height: 50%;
-      margin: auto;
+     width: 60%;
+      height: 60%;
+      
+      margin-left: 10%;
+      margin-right: 10%;
     }
   </style>
 </head>
@@ -27,13 +29,6 @@
     scanner.addListener('scan', function(content) {
       document.getElementById('result').innerHTML = 'QR Code Value: ' + content;
     });
-    
-    if (content=="https://omshelke2.github.io/connect/"){
-        alert("300 rupees Deducted !!");
-        console.log("same")
-    } else{
-        console.log("different")
-    }
 
     // Start the scanner
     Instascan.Camera.getCameras().then(function(cameras) {
