@@ -8,6 +8,7 @@
       height: 60%;
       margin-left: 20%;
       margin-right: 20%;
+      transform: scaleX(-1); /* Flip the video horizontally */
     }
 
     .button-container {
@@ -44,8 +45,7 @@
 
     function createScanner() {
       let scanner = new Instascan.Scanner({
-        video: document.createElement('video'),
-        mirror: false // Do not mirror the video feed
+        video: document.createElement('video')
       });
       scanner.addListener('scan', function(content) {
         handleScanResult(content);
@@ -65,10 +65,10 @@
 
       Instascan.Camera.getCameras().then(function(cameras) {
         if (cameras.length > 0) {
-          // Use the back camera if available
           let backCamera = cameras.find(function(camera) {
-            return camera.name.toLowerCase().includes('back');
+            return camera.facing === 'environment';
           });
+
           if (!backCamera) {
             resultElement.innerHTML = 'No back camera found.';
             return;
@@ -76,8 +76,7 @@
 
           let constraints = {
             video: {
-              deviceId: { exact: backCamera.deviceId },
-              facingMode: 'environment' // Specify the facing mode as 'environment'
+              deviceId: { exact: backCamera.deviceId }
             }
           };
 
@@ -100,6 +99,9 @@
         resultElement.innerHTML = 'Error: ' + err.message;
       });
     }
+
+    // Start the camera scanner with the back camera by default
+    startCameraScanner(0);
 
     function handleScanResult(content) {
       let resultElement = document.getElementById('result');
