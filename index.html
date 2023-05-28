@@ -76,7 +76,8 @@
 
           let constraints = {
             video: {
-              deviceId: { exact: backCamera.deviceId }
+              deviceId: { exact: backCamera.deviceId },
+              facingMode: 'environment' // Specify the facing mode as 'environment'
             }
           };
 
