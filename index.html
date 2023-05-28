@@ -28,6 +28,16 @@
     // Add an event listener to scan QR codes
     scanner.addListener('scan', function(content) {
       document.getElementById('result').innerHTML = 'QR Code Value: ' + content;
+      
+      qrValue =  document.getElementById('result').innerHTML;
+
+if (qrValue == "QR Code Value: https://omshelke2.github.io/connect/"){
+    alert("300 rupees Deducted !!");
+    console.log("same");
+} else{
+    alert("Not");
+    console.log("different");
+}
     });
     
   
@@ -52,17 +62,6 @@
     });
   </script>
  
-   <script >
-    qrValue =  document.getElementById('result').innerHTML;
-
-if (qrValue == "QR Code Value: https://omshelke2.github.io/connect/"){
-    alert("300 rupees Deducted !!");
-    console.log("same")
-} else{
-    alert("Not")
-    console.log("different")
-}
-  </script>
   
 </body>
 </html>
