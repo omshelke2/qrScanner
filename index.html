@@ -3,142 +3,65 @@
 <head>
   <title>QR Code Scanner</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    
-    h1 {
-      margin-top: 20px;
-    }
-    
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 80vh;
-    }
-    
-    .option {
-      margin: 20px;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background-color: #f7f7f7;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      transition: box-shadow 0.3s ease-in-out;
-      cursor: pointer;
-      display: inline-block;
-      text-align: center;
-    }
-    
-    .option:hover {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-    .option h2 {
-      margin-top: 0;
-    }
-    
-    .result {
-      margin-top: 20px;
+    #preview {
+     width: 60%;
+      height: 60%;
+      
+      margin-left: 10%;
+      margin-right: 10%;
     }
   </style>
 </head>
 <body>
   <h1>QR Code Scanner</h1>
-  
-  <div class="container">
-    <div class="option" onclick="startScanner('Option A')">
-      <h2>Scan Option A</h2>
-      <video id="previewA"></video>
-      <div class="result" id="resultA"></div>
-    </div>
-  
-    <div class="option" onclick="startScanner('Option B')">
-      <h2>Scan Option B</h2>
-      <video id="previewB"></video>
-      <div class="result" id="resultB"></div>
-    </div>
-  </div>
+  <video id="preview"></video>
+  <div id="result"></div>
 
-  <script src="https://unpkg.com/@zxing/library@0.18.5"></script>
+  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
   <script>
-    let scannerA, scannerB;
+    // Create a new instance of the Instascan scanner
+    let scanner = new Instascan.Scanner({
+      video: document.getElementById('preview'),
+      mirror: false // Do not mirror the video feed
+    });
 
-    function startScanner(option) {
-      let optionElement = document.getElementById('result' + option);
-      optionElement.innerHTML = 'Initializing...';
+    // Add an event listener to scan QR codes
+    scanner.addListener('scan', function(content) {
+      document.getElementById('result').innerHTML = 'QR Code Value: ' + content;
+      
+      qrValue =  document.getElementById('result').innerHTML;
 
-      // Create scanner for the selected option
-      let scanner;
-      if (option === 'Option A') {
-        scanner = scannerA || createScanner('previewA', optionElement, option);
-        scannerA = scanner;
-      } else if (option === 'Option B') {
-        scanner = scannerB || createScanner('previewB', optionElement, option);
-        scannerB = scanner;
-      }
+if (qrValue == "QR Code Value: https://omshelke2.github.io/connect/"){
+    alert("300 rupees Deducted !!");
+    console.log("same");
+} else{
+    alert("Not");
+    console.log("different");
+}
+    });
+    
+  
 
-      // Start the scanner
-      startCameraScanner(scanner, optionElement, option);
-    }
 
-    function createScanner(videoId, resultElement, option) {
-      let video = document.getElementById(videoId);
-      let scanner = new ZXing.BrowserMultiFormatReader();
-
-      scanner.listVideoInputDevices()
-        .then(function(videoInputDevices) {
-          if (videoInputDevices.length > 0) {
-            scanner.decodeFromVideoDevice(videoInputDevices[0].deviceId, video, function(result) {
-              handleScanResult(result.text, resultElement, option);
-            });
-            resultElement.innerHTML = 'Scanner started for ' + option;
-          } else {
-            console.error('No video input devices found for ' + option);
-            resultElement.innerHTML = 'Error: No video input devices found for ' + option;
-          }
-        })
-        .catch(function(err) {
-          console.error(err);
-          resultElement.innerHTML = 'Error: ' + err.message;
+    // Start the scanner
+    Instascan.Camera.getCameras().then(function(cameras) {
+      if (cameras.length > 0) {
+        // Use the back camera if available
+        let backCamera = cameras.find(function(camera) {
+          return camera.name.toLowerCase().includes('back');
         });
-
-      return scanner;
-    }
-
-    function startCameraScanner(scanner, resultElement, option) {
-      let video = document.getElementById('preview' + option);
-
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(stream) {
-          video.srcObject = stream;
-          video.play();
-        })
-        .catch(function(err) {
-          console.error(err);
-          resultElement.innerHTML = 'Error: ' + err.message;
-        });
-    }
-
-    function handleScanResult(content, resultElement, option) {
-      resultElement.innerHTML = 'QR Code Value (' + option + '): ' + content;
-
-      // Check if scanned QR code matches a predefined value
-      let predefinedValueA = "1234";
-      let predefinedValueB = "5678";
-
-      if (option === "Option A" && content === predefinedValueA) {
-        showAlert("QR Code A matches the predefined value!");
-      } else if (option === "Option B" && content === predefinedValueB) {
-        showAlert("QR Code B matches the predefined value!");
+        if (!backCamera) {
+          backCamera = cameras[0]; // Use the first camera as a fallback
+        }
+        scanner.start(backCamera);
+      } else {
+        console.error('No cameras found.');
       }
-    }
-
-    function showAlert(message) {
-      alert(message);
-    }
+    }).catch(function(e) {
+      console.error(e);
+    });
   </script>
+ 
+  
 </body>
 </html>
