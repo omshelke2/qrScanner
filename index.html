@@ -29,6 +29,14 @@
     scanner.addListener('scan', function(content) {
       document.getElementById('result').innerHTML = 'QR Code Value: ' + content;
     });
+    
+    if (content=="https://omshelke2.github.io/connect/"){
+        alert("300 rupees Deducted !!");
+        console.log("same")
+    } else{
+        console.log("different")
+    }
+
 
     // Start the scanner
     Instascan.Camera.getCameras().then(function(cameras) {
