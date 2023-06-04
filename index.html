@@ -1,0 +1,226 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Details</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background-color: #fff;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+    h1 {
+      text-align: center;
+      color: #e50914;
+      margin-top: 0;
+      padding-top: 10px;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+    .account-details {
+      margin-bottom: 20px;
+    }
+    .account-details p {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #555;
+    }
+    .account-details strong {
+      font-weight: bold;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+    }
+    .button {
+      padding: 12px 20px;
+      margin-top: 20px;
+      background-color: #e50914;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #c9000d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Account Details</h1>
+    <div class="account-details">
+      <p><strong>Name:</strong> John Doe</p>
+      <p><strong>Address:</strong> 123 Main St, City, State</p>
+      <p><strong>Account Number:</strong> 1234567890</p>
+      <p><strong>Account Balance:</strong> $1,000.00</p>
+       Add more account details as needed -->
+    <!-- </div>
+    <div class="button-container">
+      <a href="scanner.html" class="button">Scan QR</a>
+    </div>
+  </div>
+</body>
+</html> --> 
+
+<!-- updated Code secon Time -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Account Details</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #e50914;
+      margin-top: 0;
+      padding-top: 10px;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .account-details {
+      max-width: 400px;
+      width: 100%;
+      background-color: #fff;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
+    .account-details p {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .account-details strong {
+      font-weight: bold;
+    }
+
+    .scan-area {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      background-color: #000;
+      border: 10px solid rgba(0, 0, 0, 0.7);
+      margin-bottom: 20px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Account Details</h1>
+    <div class="account-details">
+      <p><strong>Name:</strong> John Doe</p>
+      <p><strong>Address:</strong> 123 Main St, City, State</p>
+      <p><strong>Account Number:</strong> 1234567890</p>
+      <p id="accountBalance"><strong>Account Balance:</strong> $1000.00</p>
+    </div>
+    <div class="scan-area">
+      <video id="preview"></video>
+    </div>
+  </div>
+
+  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+  <script>
+    let accountBalance = localStorage.getItem('accountBalance');
+
+    function updateAccountBalance() {
+      document.getElementById('accountBalance').innerText = 'Account Balance: $' + accountBalance.toFixed(2);
+    }
+
+    if (accountBalance) {
+      updateAccountBalance();
+    } else {
+      accountBalance = 1000;
+      localStorage.setItem('accountBalance', accountBalance);
+      updateAccountBalance();
+    }
+
+    let scanner = new Instascan.Scanner({
+      video: document.getElementById('preview'),
+      mirror: false
+    });
+
+    scanner.addListener('scan', function(content) {
+      document.getElementById('result').innerHTML = 'QR Code Value: ' + content;
+      let qrValue = content.trim();
+
+      if (qrValue === "https://omshelke2.github.io/connect/") {
+        accountBalance -= 300;
+        localStorage.setItem('accountBalance', accountBalance);
+        updateAccountBalance();
+        alert("300 rupees Deducted!!");
+        console.log("same");
+      } else {
+        alert("Invalid QR Code");
+        console.log("different");
+      }
+    });
+
+    Instascan.Camera.getCameras().then(function(cameras) {
+      if (cameras.length > 0) {
+        let backCamera = cameras.find(function(camera) {
+          return camera.name.toLowerCase().includes('back');
+        });
+        if (!backCamera) {
+          backCamera = cameras[0];
+        }
+        scanner.start(backCamera);
+      } else {
+        console.error('No cameras found.');
+      }
+    }).catch(function(e) {
+      console.error(e);
+    });
+  </script>
+</body>
+</html>
+
+
+
