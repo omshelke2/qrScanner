@@ -1,3 +1,5 @@
+// index.js
+
 // Create a new instance of the Instascan scanner
 let scanner = new Instascan.Scanner({
   video: document.getElementById('preview'),
@@ -22,7 +24,7 @@ scanner.addListener('scan', function(content) {
       localStorage.setItem('accountBalance', accountBalance.toFixed(2));
 
       // Redirect to account details page
-      window.location.href = 'index.html';
+      window.location.href = 'accountDetails.html';
     } else {
       alert('Incorrect Password');
     }
