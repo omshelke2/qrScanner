@@ -72,12 +72,21 @@
       <p><strong>Name:</strong> John Doe</p>
       <p><strong>Address:</strong> 123 Main St, City, State</p>
       <p><strong>Account Number:</strong> 1234567890</p>
-      <p><strong>Account Balance:</strong> $1,000.00</p>
+      <p id="accountBalance"><strong>Account Balance:</strong> $1,000.00</p>
        <!-- Add more account details as needed  -->
     </div>
     <div class="button-container">
       <a href="scanner.html" class="button">Scan QR</a>
     </div>
   </div>
+  
+  <script>
+    function updateAccountBalance() {
+      let accountBalance = parseFloat(localStorage.getItem('accountBalance'));
+      document.getElementById('accountBalance').innerText = 'Account Balance: $' + accountBalance.toFixed(2);
+    }
+
+    updateAccountBalance();
+  </script>
 </body>
-</html> 
+</html>
