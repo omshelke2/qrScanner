@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Details</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+      background-color: #fff;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+    h1 {
+      text-align: center;
+      color: #e50914;
+      margin-top: 0;
+      padding-top: 10px;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+    .account-details {
+      margin-bottom: 20px;
+    }
+    .account-details p {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #555;
+    }
+    .account-details strong {
+      font-weight: bold;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+    }
+    .button {
+      padding: 12px 20px;
+      margin-top: 20px;
+      background-color: #e50914;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .button:hover {
+      background-color: #c9000d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Account Details</h1>
+    <div class="account-details">
+      <p><strong>Name:</strong> John Doe</p>
+      <p><strong>Address:</strong> 123 Main St, City, State</p>
+      <p><strong>Account Number:</strong> 1234567890</p>
+      <p id="accountBalance"><strong>Account Balance:</strong> $1,000.00</p>
+       <!-- Add more account details as needed  -->
+    </div>
+    <div class="button-container">
+      <a href="scanner.html" class="button">Scan QR</a>
+    </div>
+  </div>
+  
+  <script>
+    function updateAccountBalance() {
+      let accountBalance = parseFloat(localStorage.getItem('accountBalance'));
+      document.getElementById('accountBalance').innerText = 'Account Balance: $' + accountBalance.toFixed(2);
+    }
+
+    updateAccountBalance();
+  </script>
+  <script src="index.js"></script>
+
+</body>
+</html>
