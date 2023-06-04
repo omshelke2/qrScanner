@@ -4,18 +4,23 @@
   <title>QR Code Scanner</title>
   <style>
     #preview {
-      background-color: black;
+    
     width: 1000px;
       height: 700px;
       
       margin-left: 15%;
       margin-right: 15%;
     }
+    .scan{
+        background-color: black;
+       width: 1000px;
+      height: 850px;
+    }
   </style>
 </head>
 <body>
   <h1>QR Code Scanner</h1>
-  <video id="preview"></video>
+  <div class = 'scan'> <video id="preview"></video></div>
   <div id="result"></div>
 
   <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
